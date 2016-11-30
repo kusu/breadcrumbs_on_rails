@@ -88,7 +88,8 @@ module BreadcrumbsOnRails
         if element.path == nil
           content = compute_name(element)
         else
-          content = @context.link_to_unless_current(compute_name(element), compute_path(element), element.options)
+          span = @context.content_tag("span", compute_name(element), itemprop: :title)
+          content = @context.link_to_unless_current(span, compute_path(element), element.options.merge({itemscope: true, itemtype: "http://data-vocabulary.org/Breadcrumb", itemprop: :url}))
         end
         if @options[:tag]
           @context.content_tag(@options[:tag], content)
