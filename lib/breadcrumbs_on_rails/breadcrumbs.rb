@@ -88,7 +88,7 @@ module BreadcrumbsOnRails
         if element.path == nil
           content = compute_name(element)
         else
-          if element.path == @context.request.path
+          if element.path == @context.request.fullpath
             content = @context.content_tag("b", compute_name(element))
           else
             span = @context.content_tag("span", compute_name(element), itemprop: :title)
