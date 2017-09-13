@@ -92,7 +92,8 @@ module BreadcrumbsOnRails
             content = @context.content_tag("b", compute_name(element))
           else
             span = @context.content_tag("span", compute_name(element), itemprop: :title)
-            content = @context.link_to_unless_current(span, compute_path(element), element.options.merge({itemprop: :url}))
+            #content = @context.link_to_unless_current(span, compute_path(element), element.options.merge({itemprop: :url}))
+            content = @context.link_to(span, compute_path(element), element.options.merge({itemprop: :url}))
             content = @context.content_tag("span", content, {itemscope: true, itemtype: "http://data-vocabulary.org/Breadcrumb"})
           end
         end
