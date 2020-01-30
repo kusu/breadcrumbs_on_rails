@@ -79,22 +79,25 @@ module BreadcrumbsOnRails
     class SimpleBuilder < Builder
 
       def render
-        @elements.collect do |element|
-          render_element(element)
+        @elements.collect.with_index do |element, i|
+          render_element(element, i)
         end.join(@options[:separator] || " &raquo; ")
       end
 
-      def render_element(element)
+      def render_element(element, i)
         if element.path == nil
           content = compute_name(element)
         else
           if element.path == @context.request.fullpath
-            content = @context.content_tag("b", compute_name(element))
+            span = @context.content_tag("span", compute_name(element), itemprop: :name)
+            meta = @context.content_tag("meta", '', {itemprop: :position, content: "#{i+1}"})
+            content = @context.content_tag("span", span + meta, {itemscope: true, itemprop: :itemListElement, itemtype: "https://schema.org/ListItem"})
           else
-            span = @context.content_tag("span", compute_name(element), itemprop: :title)
+            span = @context.content_tag("span", compute_name(element), itemprop: :name)
             #content = @context.link_to_unless_current(span, compute_path(element), element.options.merge({itemprop: :url}))
-            content = @context.link_to(span, compute_path(element), element.options.merge({itemprop: :url}))
-            content = @context.content_tag("span", content, {itemscope: true, itemtype: "http://data-vocabulary.org/Breadcrumb"})
+            content = @context.link_to(span, compute_path(element), element.options.merge({itemprop: :item}))
+            meta = @context.content_tag("meta", '', {itemprop: :position, content: "#{i+1}"})
+            content = @context.content_tag("span", content + meta, {itemscope: true, itemprop: :itemListElement, itemtype: "https://schema.org/ListItem"})
           end
         end
         if @options[:tag]
